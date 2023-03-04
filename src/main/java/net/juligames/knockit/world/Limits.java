@@ -4,17 +4,21 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.module.Configuration;
-
 /**
  * @author Ture Bentzin
  * 04.03.2023
  */
 public record Limits(int minX, int maxX, int minY, int minZ, int maxZ, int entryLevel) {
 
-    public static Limits fromSection(@NotNull ConfigurationSection section) {
-        new Location().get
-        section.get("")
+    public static @NotNull Limits fromSection(@NotNull ConfigurationSection section) {
+        final int //Lagerfeuer?
+                minX = section.getInt("minX"),
+                maxX = section.getInt("maxX"),
+                minY = section.getInt("minY"),
+                minZ = section.getInt("minZ"),
+                maxZ = section.getInt("maxZ"),
+                entryLevel = section.getInt("entryLevel");
+        return new Limits(minX, maxX, minY, minZ, maxZ, entryLevel);
     }
 
     public boolean checkLocation(@NotNull Location location, boolean aboveEntryLevel) {

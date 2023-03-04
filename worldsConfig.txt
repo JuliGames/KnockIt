@@ -28,7 +28,6 @@ worlds:
 
 
 # Config per folder:
-    id: String
     defaultname: MiniMessage
     defaultdesciption: MiniMessage
     minplayers: int | if not enough players are online the map switches to the next

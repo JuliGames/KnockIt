@@ -5,7 +5,7 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import net.juligames.core.api.API;
 import net.juligames.core.api.message.MessageApi;
 import net.juligames.core.api.misc.ThrowableDebug;
-import net.juligames.knockit.config.WorldsConfigManager;
+import net.juligames.knockit.config.WorldConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 
 public final class KnockItPlugin extends JavaPlugin {
 
-    private final @NotNull CompletableFuture<WorldsConfigManager> worldsConfigManager = new CompletableFuture<>();
+    private final @NotNull CompletableFuture<WorldConfigManager> worldsConfigManager = new CompletableFuture<>();
 
     public static @NotNull MultiverseCore getMultiverseCore() {
         return (MultiverseCore) Objects.requireNonNull(Bukkit.getServer().
@@ -35,7 +35,7 @@ public final class KnockItPlugin extends JavaPlugin {
         registerMessages(API.get().getMessageApi());
 
         //loadConfig
-        worldsConfigManager.complete(new WorldsConfigManager(getDataFolder()));
+        worldsConfigManager.complete(new WorldConfigManager(Bukkit.getWorldContainer()));
     }
 
     private void registerMessages(@NotNull MessageApi messageApi) {
@@ -45,12 +45,5 @@ public final class KnockItPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        if (worldsConfigManager.isDone()) {
-            try {
-                worldsConfigManager.get().save();
-            } catch (InterruptedException | ExecutionException e) {
-                ThrowableDebug.debug(e);
-            }
-        }
     }
 }
