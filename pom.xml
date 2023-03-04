@@ -93,6 +93,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.juligames.core</groupId>
+            <artifactId>MiniGameAPI</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <!-- https://repo.onarandombox.com/content/groups/public/com/onarandombox/multiversecore/multiverse-core/ -->
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>multiverse-core</artifactId>

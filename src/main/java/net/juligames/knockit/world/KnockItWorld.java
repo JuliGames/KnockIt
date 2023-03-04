@@ -27,6 +27,7 @@ public class KnockItWorld {
 
     protected static @NotNull MultiverseWorld worldFromID(@NotNull String id) {
        //load
+        API.get().getAPILogger().debug("loading world with id: " + id);
         KnockItPlugin.getMVWorldManager().loadWorld(id);
 
         //get

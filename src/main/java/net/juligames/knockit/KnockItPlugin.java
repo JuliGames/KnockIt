@@ -4,19 +4,18 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import net.juligames.core.api.API;
 import net.juligames.core.api.message.MessageApi;
-import net.juligames.core.api.misc.ThrowableDebug;
 import net.juligames.knockit.config.WorldConfigManager;
+import net.juligames.knockit.game.KnockIt;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public final class KnockItPlugin extends JavaPlugin {
 
-    private final @NotNull CompletableFuture<WorldConfigManager> worldsConfigManager = new CompletableFuture<>();
+    private final @NotNull CompletableFuture<KnockIt> worldsConfigManager = new CompletableFuture<>();
 
     public static @NotNull MultiverseCore getMultiverseCore() {
         return (MultiverseCore) Objects.requireNonNull(Bukkit.getServer().
@@ -34,12 +33,18 @@ public final class KnockItPlugin extends JavaPlugin {
         //registerMessages
         registerMessages(API.get().getMessageApi());
 
-        //loadConfig
-        worldsConfigManager.complete(new WorldConfigManager(Bukkit.getWorldContainer()));
+        //introduce MiniGame
+        KnockIt knockIt = new KnockIt(this);
+        API.get().getLocalMiniGame().set(knockIt);
+        worldsConfigManager.complete(knockIt);
     }
 
     private void registerMessages(@NotNull MessageApi messageApi) {
-
+            messageApi.registerMessage("knockit.levels.moved", "<prefix><color_info>You where moved to <color_accent>{0}</color_accent>!");
+            messageApi.registerMessage("knockit.border", "<gold>--------------------------------------");
+            messageApi.registerMessage("knockit.welcome.header", "<info_color>Welcome to KnockIt!");
+            messageApi.registerMessage("knockit.welcome.footer", "<color_debug><br>{0}");
+            messageApi.registerMessage("knockit.welcome.text", "<info_color><br>This is a small explanation of what this Gamemode is all about and how it works. <br>This will be filled later in development <br>If you want you can enter your own Text here!");
     }
 
     @Override
