@@ -1,0 +1,53 @@
+# This file specifies the structure of the worlds.yaml:
+
+configversion: String
+
+worlds:
+  id:
+    defaultname: MiniMessage
+    defaultdesciption: MiniMessage
+    minplayers: int | if not enough players are online the map switches to the next
+    builders:
+      - String
+      - String
+      - String
+    duration: long
+    spawn:
+      x: int
+      y: int
+      z: int
+      yaw: float
+      pitch: float
+    limits:
+      minX: int
+      maxX: int
+      minY: int
+      maxZ: int
+      minZ: int
+      entryLevel: int
+
+
+# Config per folder:
+    id: String
+    defaultname: MiniMessage
+    defaultdesciption: MiniMessage
+    minplayers: int | if not enough players are online the map switches to the next
+    builders:
+      - String
+      - String
+      - String
+    duration: long
+    spawn:
+      x: int
+      y: int
+      z: int
+      yaw: float
+      pitch: float
+    limits:
+      minX: int
+      maxX: int
+      minY: int
+      maxZ: int
+      minZ: int
+      entryLevel: int
+
