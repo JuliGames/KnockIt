@@ -1,6 +1,6 @@
 package net.juligames.knockit.game;
 
-import de.bentzin.tools.logging.Logger;
+import net.juligames.core.adventure.api.AdventureAPI;
 import net.juligames.core.api.API;
 import net.juligames.core.api.misc.ThrowableDebug;
 import net.juligames.core.minigame.api.SimpleMiniGame;
@@ -22,7 +22,8 @@ public class KnockIt extends SimpleMiniGame {
 
     private final @NotNull CompletableFuture<WorldConfigManager> worldsConfigManager = new CompletableFuture<>();
     private final @NotNull KnockItPlugin knockItPlugin;
-    private @NotNull KnockItLevel level;
+    private @Nullable KnockItLevel level;
+    private boolean running;
 
     public KnockIt(@NotNull KnockItPlugin knockItPlugin) {
         super("KnockIt",
@@ -33,7 +34,9 @@ public class KnockIt extends SimpleMiniGame {
         this.knockItPlugin = knockItPlugin;
     }
 
-    private boolean running;
+    public static boolean isMiniGameActive() {
+        return API.get().getLocalMiniGame().isPresent() && API.get().getLocalMiniGame().get().isRunning();
+    }
 
     @Override
     protected void onLoad() {
@@ -46,6 +49,7 @@ public class KnockIt extends SimpleMiniGame {
         } catch (NoSuchFileException | ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        Bukkit.getPluginManager().registerEvents(new KnockItListener(this), knockItPlugin);
     }
 
     @Override
@@ -55,7 +59,7 @@ public class KnockIt extends SimpleMiniGame {
         getLogger().info("Jumping right into it... please wait...");
         try {
             nextLevel();
-        }catch (Exception e){
+        } catch (Exception e) {
             getLogger().error("Error while starting KnockIt: " + e.getMessage());
             ThrowableDebug.debug(e);
             return false;
@@ -67,6 +71,10 @@ public class KnockIt extends SimpleMiniGame {
     @Override
     protected void onAbort() {
         running = false;
+        getLogger().warning("The game was aborted. All players will be kicked!");
+        Bukkit.getOnlinePlayers().forEach(player ->
+                player.kick(AdventureAPI.get().getAdventureTagManager().
+                        resolve(API.get().getMessageApi().getMessageSmart("knockit.closed", player.locale()))));
 
     }
 
@@ -97,7 +105,7 @@ public class KnockIt extends SimpleMiniGame {
     public void nextLevel() {
         try {
 
-            if(level != null) {
+            if (level != null) {
                 getLogger().info("end of level:" + level.getWorld().getId());
             }
 
@@ -115,7 +123,13 @@ public class KnockIt extends SimpleMiniGame {
         }
     }
 
-    public @NotNull KnockItLevel getLevel() {
+    public @Nullable KnockItLevel getLevel() {
+        return level;
+    }
+
+    public @NotNull KnockItLevel getLevelOrThrow() {
+        if(level == null)
+            throw new NullPointerException("level needs to be present at this time!");
         return level;
     }
 }

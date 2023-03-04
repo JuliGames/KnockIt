@@ -1,5 +1,8 @@
 package net.juligames.knockit.util;
 
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import net.juligames.core.api.API;
+import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,5 +39,12 @@ public class KnockItUtil {
             builder.append(s).append(",");
         }
         return builder.toString();
+    }
+
+    public static void importWorldToMultiverse(@NotNull MVWorldManager manager, @NotNull String name) {
+        if(manager.isMVWorld(name)) return;
+        boolean b = manager.addWorld(name, World.Environment.CUSTOM, null, null, null, null);
+        API.get().getAPILogger().debug("loaded world: " + name + " with result " + b + "!");
+
     }
 }

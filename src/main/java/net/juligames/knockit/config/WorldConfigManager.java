@@ -50,7 +50,7 @@ public class WorldConfigManager {
 
     public @NotNull Collection<KnockItWorld> constructWorlds() {
         return getKnockItWorldSpecifications().entrySet().stream().map(entry ->
-                KnockItWorld.fromSection(entry.getKey().getName().replace("./", ""), // oh this could fire back...
+                KnockItWorld.fromSection(entry.getKey().getName().replace("./", ""), // oh, this could fire back...
                         entry.getValue())).toList();
     }
 }

@@ -3,12 +3,17 @@ package net.juligames.knockit.world;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import net.juligames.core.api.API;
 import net.juligames.knockit.KnockItPlugin;
+import net.juligames.knockit.util.KnockItUtil;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Ture Bentzin
@@ -28,10 +33,17 @@ public class KnockItWorld {
     protected static @NotNull MultiverseWorld worldFromID(@NotNull String id) {
        //load
         API.get().getAPILogger().debug("loading world with id: " + id);
-        KnockItPlugin.getMVWorldManager().loadWorld(id);
+        World world = importCBWorld(id);
+        KnockItUtil.importWorldToMultiverse(KnockItPlugin.getMVWorldManager(), id);
+        API.get().getAPILogger().debug("loaded world with id: " + id + " @" +  world.getWorldFolder().getPath());
+
 
         //get
         return KnockItPlugin.getMVWorldManager().getMVWorld(id);
+    }
+
+    private static @NotNull World importCBWorld(@NotNull String id) {
+        return Objects.requireNonNull(new WorldCreator(id).createWorld());
     }
 
     public static @NotNull KnockItWorld fromSection(@NotNull String id, @NotNull ConfigurationSection section) {
@@ -106,6 +118,19 @@ public class KnockItWorld {
             this("knockit_worlds_" + id + "_name", "knockit_worlds_" + id + "_description");
             API.get().getMessageApi().registerMessage("knockit_worlds_" + id + "_name", name);
             API.get().getMessageApi().registerMessage("knockit_worlds_" + id + "_description", description);
+        }
+
+        public @NotNull String getDescriptionKey() {
+            return descriptionKey;
+        }
+
+        public @NotNull String getNameKey() {
+            return nameKey;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "\"" +  getNameKey() + "\" + \"" + getDescriptionKey() + "\"";
         }
     }
 }

@@ -1,5 +1,6 @@
 package net.juligames.knockit.game;
 
+import net.juligames.core.adventure.api.AdventureAPI;
 import net.juligames.core.api.API;
 import net.juligames.core.paper.PaperMessageRecipient;
 import net.juligames.knockit.KnockItPlugin;
@@ -10,6 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.NoSuchElementException;
 
 /**
  * @author Ture Bentzin
@@ -26,7 +29,8 @@ public class KnockItLevel {
     }
 
     public static @NotNull KnockItLevel chooseLevel(@NotNull WorldConfigManager worldConfigManager, @NotNull KnockIt miniGame) {
-        return new KnockItLevel(miniGame, KnockItUtil.getRandom(worldConfigManager.constructWorlds()).orElseThrow());
+        return new KnockItLevel(miniGame, KnockItUtil.getRandom(worldConfigManager.constructWorlds()).orElseThrow(()
+                -> new NoSuchElementException("KnockIt failed to find a level! Make sure your levels are set up properly!")));
     }
 
     /**
@@ -46,7 +50,10 @@ public class KnockItLevel {
         Bukkit.getOnlinePlayers().forEach(player ->{
             World craftBukkitWorld = world.getMvWorld().getCBWorld();
             player.teleport(getWorld().getSpawn().toLocation(craftBukkitWorld));
-            API.get().getMessageApi().sendMessage("knockit.levels.moved", new PaperMessageRecipient(player));
+            final String miniMessageName = API.get().getMessageApi()
+                    .getMessageSmart(world.getMessageKeyHolder().getNameKey(), player.locale()).getMiniMessage();
+            API.get().getMessageApi().sendMessage("knockit.levels.moved", new PaperMessageRecipient(player),
+                    new String[]{miniMessageName});
         });
     }
 
