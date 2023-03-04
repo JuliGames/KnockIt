@@ -1,8 +1,7 @@
 name: KnockIt
-version: '${project.version}'
+version: '0.1-SNAPSHOT'
 main: net.juligames.knockit.KnockItPlugin
 api-version: 1.18
 load: STARTUP
 depend:
   - PaperCore
-  - Multiverse-Core
