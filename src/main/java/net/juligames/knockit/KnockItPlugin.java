@@ -48,6 +48,7 @@ public final class KnockItPlugin extends JavaPlugin {
             messageApi.registerMessage("knockit.closed", "<color_fatal>The game was closed!");
             messageApi.registerMessage("knockit.join", "<gray><green>+</red> {0}");
             messageApi.registerMessage("knockit.leave", "<gray><red>-</red> {0}");
+            messageApi.registerMessage("knockit.currentmap", "<prefix><color_info>The current map is: <color_accent>{0}</color_accent> by <color_accent_2>{1}</color_accent_2>!");
     }
 
     @Override

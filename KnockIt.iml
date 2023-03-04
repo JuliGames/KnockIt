@@ -51,6 +51,8 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.ow2.asm:asm-commons:9.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.ow2.asm:asm-tree:9.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.ow2.asm:asm-analysis:9.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: io.papermc.paper:paper-mojangapi:1.18.2-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.mojang:brigadier:1.0.18" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.juligames.core:PaperCore:1.5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.16" level="project" />
     <orderEntry type="library" name="Maven: net.juligames.core:MiniGameAPI:1.5-SNAPSHOT" level="project" />

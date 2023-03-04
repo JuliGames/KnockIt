@@ -1,5 +1,6 @@
 package net.juligames.knockit.game;
 
+import net.juligames.core.adventure.api.AdventureAPI;
 import net.juligames.core.api.API;
 import net.juligames.core.paper.PaperMessageRecipient;
 import org.bukkit.entity.Player;
@@ -8,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import static net.juligames.knockit.game.KnockIt.isMiniGameActive;
@@ -55,8 +57,15 @@ public class KnockItListener implements Listener {
         API.get().getMessageApi().sendMessage("knockit.border", messageRecipient);
         API.get().getMessageApi().sendMessage("knockit.welcome.header", messageRecipient);
         API.get().getMessageApi().sendMessage("knockit.welcome.text", messageRecipient);
-        API.get().getMessageApi().sendMessage("knockit.welcome.footer", messageRecipient, new String[]{knockIt.getKnockItPlugin().getDescription().getFullName()});
+        API.get().getMessageApi().sendMessage("knockit.welcome.footer", messageRecipient,
+                new String[]{knockIt.getKnockItPlugin().getDescription().getFullName()});
         API.get().getMessageApi().sendMessage("knockit.border", messageRecipient);
+        event.joinMessage(AdventureAPI.get().forAudience("knockit.join",player));
+    }
+
+    @EventHandler
+    public void onQuit(@NotNull PlayerQuitEvent event) {
+        event.quitMessage(AdventureAPI.get().forAudience("knockit.join",event.getPlayer()));
     }
 
     protected @NotNull KnockIt getKnockIt() {
