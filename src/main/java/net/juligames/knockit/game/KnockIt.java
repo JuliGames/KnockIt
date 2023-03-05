@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.NoSuchFileException;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -24,6 +25,7 @@ public class KnockIt extends SimpleMiniGame {
     private final @NotNull KnockItPlugin knockItPlugin;
     private @Nullable KnockItLevel level;
     private boolean running;
+    private @Nullable NextLevelTimer nextLevelTimer;
 
     public KnockIt(@NotNull KnockItPlugin knockItPlugin) {
         super("KnockIt",
@@ -104,12 +106,21 @@ public class KnockIt extends SimpleMiniGame {
 
     public void nextLevel() {
         try {
+            KnockItLevel knockItLevel = KnockItLevel.chooseLevel(worldsConfigManager.get(), this);
+            nextLevel(knockItLevel);
+        } catch (InterruptedException | ExecutionException e) {
+            getLogger().error("Error while selecting level: " + e.getMessage());
+            ThrowableDebug.debug(e);
+        }
+    }
+
+    public void nextLevel(@NotNull KnockItLevel knockItLevel) {
+        try {
 
             if (level != null) {
                 getLogger().info("end of level:" + level.getWorld().getId());
             }
 
-            KnockItLevel knockItLevel = KnockItLevel.chooseLevel(worldsConfigManager.get(), this);
             getLogger().info("playing level: " + knockItLevel);
             getLogger().info("preparing level...");
             knockItLevel.prepare();
@@ -117,10 +128,22 @@ public class KnockIt extends SimpleMiniGame {
             level = knockItLevel;
             getLogger().info("teleporting players to next level...");
             level.pullPlayers();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
             getLogger().error("Error while selecting level: " + e.getMessage());
             ThrowableDebug.debug(e);
         }
+    }
+
+    public void nextLevel(@NotNull Duration duration) {
+        if (nextLevelTimer != null) nextLevelTimer.abort();
+        try {
+            KnockItLevel knockItLevel = KnockItLevel.chooseLevel(worldsConfigManager.get(), this);
+            nextLevelTimer = new NextLevelTimer(duration, knockItLevel);
+        } catch (InterruptedException | ExecutionException e) {
+            getLogger().error("Error while starting timer: " + e.getMessage());
+            ThrowableDebug.debug(e);
+        }
+
     }
 
     public @Nullable KnockItLevel getLevel() {
@@ -128,7 +151,7 @@ public class KnockIt extends SimpleMiniGame {
     }
 
     public @NotNull KnockItLevel getLevelOrThrow() {
-        if(level == null)
+        if (level == null)
             throw new NullPointerException("level needs to be present at this time!");
         return level;
     }
