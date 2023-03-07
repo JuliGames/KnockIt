@@ -1,14 +1,14 @@
 package net.juligames.knockit.world;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import net.juligames.core.adventure.api.AdventureAPI;
 import net.juligames.core.api.API;
 import net.juligames.knockit.KnockItPlugin;
 import net.juligames.knockit.util.KnockItUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
-import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public class KnockItWorld {
 
     private final @NotNull MultiverseWorld mvWorld;
     private final @NotNull String id;
-    private final @NotNull MessageKeyHolder messageKeyHolder;
+    private final @NotNull KnockItWorld.MessageHolder messageHolder;
     private final @NotNull KnockItLocation spawn;
     private final @NotNull Limits limits;
     private final int minPlayers;
@@ -48,7 +48,7 @@ public class KnockItWorld {
 
     public static @NotNull KnockItWorld fromSection(@NotNull String id, @NotNull ConfigurationSection section) {
         return new KnockItWorldBuilder().setId(id).
-                setMessageKeyHolder(new MessageKeyHolder(id, section.getString("defaultname", "unknown"),
+                setMessageKeyHolder(new MessageHolder(id, section.getString("defaultname", "unknown"),
                         section.getString("defaultdescription", "error")))
                 .setMinPlayers(section.getInt("minplayers", 0))
                 .setBuilders(section.getStringList("builders"))
@@ -59,13 +59,13 @@ public class KnockItWorld {
     }
 
     @Contract(pure = true)
-    public KnockItWorld(@NotNull String id, @NotNull MessageKeyHolder messageKeyHolder,
+    public KnockItWorld(@NotNull String id, @NotNull KnockItWorld.MessageHolder messageHolder,
                         @NotNull KnockItLocation spawn, @NotNull Limits limits, int minPlayers,
                         @NotNull List<String> builders, long duration) {
 
         this.mvWorld = worldFromID(id);
         this.id = id;
-        this.messageKeyHolder = messageKeyHolder;
+        this.messageHolder = messageHolder;
         this.spawn = spawn;
         this.limits = limits;
         this.minPlayers = minPlayers;
@@ -81,8 +81,8 @@ public class KnockItWorld {
         return id;
     }
 
-    public @NotNull MessageKeyHolder getMessageKeyHolder() {
-        return messageKeyHolder;
+    public @NotNull KnockItWorld.MessageHolder getMessageHolder() {
+        return messageHolder;
     }
 
     public @NotNull KnockItLocation getSpawn() {
@@ -105,18 +105,17 @@ public class KnockItWorld {
         return duration;
     }
 
-    public static class MessageKeyHolder {
-        private final @NotNull String nameKey;
+    public static class MessageHolder {
+        private final @NotNull Component name;
         private final @NotNull String descriptionKey;
 
-        private MessageKeyHolder(@NotNull String nameKey, @NotNull String descriptionKey) {
-            this.nameKey = nameKey;
+        private MessageHolder(@NotNull Component name, @NotNull String descriptionKey) {
+            this.name = name;
             this.descriptionKey = descriptionKey;
         }
 
-        public MessageKeyHolder(@NotNull String id, @NotNull String name, @NotNull String description) {
-            this("knockit_worlds_" + id + "_name", "knockit_worlds_" + id + "_description");
-            API.get().getMessageApi().registerMessage("knockit_worlds_" + id + "_name", name);
+        public MessageHolder(@NotNull String id, @NotNull String nameMiniMessage, @NotNull String description) {
+            this(AdventureAPI.get().getAdventureTagManager().resolve(nameMiniMessage), "knockit_worlds_" + id + "_description");
             API.get().getMessageApi().registerMessage("knockit_worlds_" + id + "_description", description);
         }
 
@@ -124,13 +123,17 @@ public class KnockItWorld {
             return descriptionKey;
         }
 
-        public @NotNull String getNameKey() {
-            return nameKey;
+        public @NotNull Component getName() {
+            return name;
+        }
+
+        public @NotNull String getNameAsMiniMessage() {
+            return AdventureAPI.get().getAdventureTagManager().fromComponent(getName());
         }
 
         @Override
         public @NotNull String toString() {
-            return "\"" +  getNameKey() + "\" + \"" + getDescriptionKey() + "\"";
+            return "\"" +  getName() + "\" + \"" + getDescriptionKey() + "\"";
         }
     }
 }

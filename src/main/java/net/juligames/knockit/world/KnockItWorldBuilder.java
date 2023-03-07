@@ -9,7 +9,7 @@ import java.util.Objects;
 public class KnockItWorldBuilder {
 
     private @Nullable String id;
-    private KnockItWorld.@Nullable MessageKeyHolder messageKeyHolder;
+    private KnockItWorld.@Nullable MessageHolder messageHolder;
     private @Nullable KnockItLocation spawn;
     private @Nullable Limits limits;
     private int minPlayers = 0;
@@ -21,8 +21,8 @@ public class KnockItWorldBuilder {
         return this;
     }
 
-    public @NotNull KnockItWorldBuilder setMessageKeyHolder(KnockItWorld.@NotNull MessageKeyHolder messageKeyHolder) {
-        this.messageKeyHolder = messageKeyHolder;
+    public @NotNull KnockItWorldBuilder setMessageKeyHolder(KnockItWorld.@NotNull MessageHolder messageHolder) {
+        this.messageHolder = messageHolder;
         return this;
     }
 
@@ -52,7 +52,7 @@ public class KnockItWorldBuilder {
     }
 
     public @NotNull KnockItWorld build() {
-        return new KnockItWorld(Objects.requireNonNull(id), Objects.requireNonNull(messageKeyHolder),
+        return new KnockItWorld(Objects.requireNonNull(id), Objects.requireNonNull(messageHolder),
                 Objects.requireNonNull(spawn), Objects.requireNonNull(limits), minPlayers,
                 Objects.requireNonNull(builders), duration);
     }

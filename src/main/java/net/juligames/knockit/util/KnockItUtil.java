@@ -1,12 +1,11 @@
 package net.juligames.knockit.util;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.display.handlers.PagedListDisplayHandler;
 import net.juligames.core.api.API;
-import net.juligames.core.paper.PaperMessageRecipient;
 import net.juligames.knockit.world.KnockItWorld;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,12 +48,5 @@ public class KnockItUtil {
         if(manager.isMVWorld(name)) return;
         boolean b = manager.addWorld(name, World.Environment.CUSTOM, null, null, null, null);
         API.get().getAPILogger().debug("loaded world: " + name + " with result " + b + "!");
-    }
-
-    public static Component method(KnockItWorld world, ) {
-        final String miniMessageName = API.get().getMessageApi()
-                .getMessageSmart(world.getMessageKeyHolder().getNameKey(), player.locale()).getMiniMessage();
-
-        );
     }
 }

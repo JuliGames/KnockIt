@@ -54,8 +54,7 @@ public class KnockItLevel {
         Bukkit.getOnlinePlayers().forEach(player -> {
             World craftBukkitWorld = world.getMvWorld().getCBWorld();
             player.teleport(getWorld().getSpawn().toLocation(craftBukkitWorld));
-            final String miniMessageName = API.get().getMessageApi()
-                    .getMessageSmart(world.getMessageKeyHolder().getNameKey(), player.locale()).getMiniMessage();
+            final String miniMessageName = world.getMessageHolder().getNameAsMiniMessage();
             API.get().getMessageApi().sendMessage("knockit.levels.moved", new PaperMessageRecipient(player),
                     new String[]{miniMessageName});
             welcomePlayer(player);
@@ -71,9 +70,9 @@ public class KnockItLevel {
 
     public @NotNull Title buildTitle(@NotNull Audience audience) {
         Component title =
-                AdventureAPI.get().forAudience(getWorld().getMessageKeyHolder().getNameKey(), audience),
+                getWorld().getMessageHolder().getName(),
                 subtitle =
-                        AdventureAPI.get().forAudience(getWorld().getMessageKeyHolder().getDescriptionKey(), audience);
+                        AdventureAPI.get().forAudience(getWorld().getMessageHolder().getDescriptionKey(), audience);
         return Title.title(title, subtitle);
     }
 

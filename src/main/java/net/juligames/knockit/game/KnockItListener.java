@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +67,11 @@ public class KnockItListener implements Listener {
     @EventHandler
     public void onQuit(@NotNull PlayerQuitEvent event) {
         event.quitMessage(AdventureAPI.get().forAudience("knockit.join",event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onBorder(@NotNull PlayerMoveEvent event){
+
     }
 
     protected @NotNull KnockIt getKnockIt() {
