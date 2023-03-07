@@ -52,8 +52,8 @@ public class KnockItLevel {
 
     public void pullPlayers() {
         Bukkit.getOnlinePlayers().forEach(player -> {
-            World craftBukkitWorld = world.getMvWorld().getCBWorld();
-            player.teleport(getWorld().getSpawn().toLocation(craftBukkitWorld));
+            knockIt.getSpawnUUIDs().add(player.getUniqueId());
+            getKnockIt().spawnIslandPlayer(player);
             final String miniMessageName = world.getMessageHolder().getNameAsMiniMessage();
             API.get().getMessageApi().sendMessage("knockit.levels.moved", new PaperMessageRecipient(player),
                     new String[]{miniMessageName});

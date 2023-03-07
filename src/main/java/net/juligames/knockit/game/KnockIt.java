@@ -1,5 +1,6 @@
 package net.juligames.knockit.game;
 
+import de.bentzin.tools.collection.SubscribableList;
 import net.juligames.core.adventure.api.AdventureAPI;
 import net.juligames.core.api.API;
 import net.juligames.core.api.misc.ThrowableDebug;
@@ -7,11 +8,13 @@ import net.juligames.core.minigame.api.SimpleMiniGame;
 import net.juligames.knockit.KnockItPlugin;
 import net.juligames.knockit.config.WorldConfigManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.NoSuchFileException;
 import java.time.Duration;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -23,6 +26,7 @@ public class KnockIt extends SimpleMiniGame {
 
     private final @NotNull CompletableFuture<WorldConfigManager> worldsConfigManager = new CompletableFuture<>();
     private final @NotNull KnockItPlugin knockItPlugin;
+    private final @NotNull SubscribableList<UUID> spawnUUIDs = new SubscribableList<>();
     private @Nullable KnockItLevel level;
     private boolean running;
     private @Nullable NextLevelTimer nextLevelTimer;
@@ -154,5 +158,36 @@ public class KnockIt extends SimpleMiniGame {
         if (level == null)
             throw new NullPointerException("level needs to be present at this time!");
         return level;
+    }
+
+    public @NotNull SubscribableList<UUID> getSpawnUUIDs() {
+        return spawnUUIDs;
+    }
+
+    public void playerMatchEntry(@NotNull Player player) {
+        //give kit items start counting for kills and deaths and enable hits and stuff
+        getLogger().info(player.getName() + " entering the match!");
+    }
+
+    public void playerViolateBorder(@NotNull Player player) {
+        //send player back to spawn and add kill i guess
+    }
+
+    public void playerKilledByViolation(@NotNull Player player) {
+        //increase deaths
+        spawnIslandPlayer(player);
+    }
+
+    /**
+     * The players return to the spawn will be handled
+     */
+    public void spawnIslandPlayer(@NotNull Player player) {
+        player.setHealthScale(20);
+        player.setHealth(20);
+        player.setSaturation(20);
+        player.getActivePotionEffects().clear();
+        player.getInventory().clear();
+        player.teleport(getLevelOrThrow().getSpawn());
+        getLogger().info(player.getName() +" was brought to spawn!");
     }
 }

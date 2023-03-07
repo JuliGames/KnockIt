@@ -39,13 +39,16 @@ public class NextLevelTimer extends Timer {
 
     @Override
     public void update(int seconds) {
-        if (durationPredicate(initial).test(seconds)) {
+        //if (durationPredicate(initial).test(seconds)) {
             //initial
-            API.get().getMessageApi().broadcastMessage("knockit.next.time", repl())
-        }
+            API.get().getMessageApi().broadcastMessage("knockit.next.time", repl(Duration.ofDays(seconds).toString()
+                    .substring(2)
+                    .replaceAll("(\\d[HMS])(?!$)", "$1 ")
+                    .toLowerCase()));
+        //}
 
         if (durationPredicate(Duration.ofMinutes(10)).test(seconds)) {
-
+                //TODO Steps
         }
     }
 
